@@ -122,12 +122,13 @@ namespace EmployeePayRoll_ADO.NET
             }
             catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(ex.Message);
             }
             finally
             {
                 connection.Close();
             }
+            return false;
             
         }
         /// <summary>
