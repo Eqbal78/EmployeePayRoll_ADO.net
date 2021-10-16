@@ -105,13 +105,13 @@ namespace EmployeePayRoll_ADO.NET
                     command.Parameters.AddWithValue("@address", model.Address);
                     command.Parameters.AddWithValue("@start_date", model.StartDate);
                     command.Parameters.AddWithValue("@basic_pay",model.BasicPay);
-                    command.Parameters.AddWithValue("@deductions", model.Deductions);
+                    command.Parameters.AddWithValue("@deduction", model.Deductions);
                     command.Parameters.AddWithValue("@taxable_pay", model.TaxablePay);
                     command.Parameters.AddWithValue("@incomeTax", model.IncomeTax);
                     command.Parameters.AddWithValue("@net_pay", model.NetPay);
-                    this.connection.Open();
-                    var  result = command.ExecuteNonQuery();
-                    this.connection.Close();
+                    connection.Open();
+                    int result = command.ExecuteNonQuery();
+                    connection.Close();
 
                     if (result != 0)
                     {
@@ -122,15 +122,45 @@ namespace EmployeePayRoll_ADO.NET
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(e.Message);
             }
             finally
             {
                 connection.Close();
             }
-            return false;
+            
+        }
+        /// <summary>
+        /// update the details
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool UpdateSalary(EmployeeModel model)
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand sqlCommand = new SqlCommand("spUpdateSalary", this.connection);
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    sqlCommand.Parameters.AddWithValue("@id", model.EmployeeID);
+                    sqlCommand.Parameters.AddWithValue("@basic_pay", model.BasicPay);
+                    sqlCommand.Parameters.AddWithValue("@name", model.EmployeeName);
+                    connection.Open();
+                    int result = sqlCommand.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-       
     }
 }
