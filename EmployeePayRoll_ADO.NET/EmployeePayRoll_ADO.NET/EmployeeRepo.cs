@@ -218,5 +218,46 @@ namespace EmployeePayRoll_ADO.NET
                 connection.Close();
             }
         }
+        /// <summary>
+        /// Do Database operations
+        /// </summary>
+        public void ImplementDatabaseFunctions()
+        {
+            EmployeeModel model = new EmployeeModel();
+            try
+            {
+                using (this.connection)
+                {
+                    string query = @"select Gender, SUM(basic_pay) as SumOfSalary, MAX(basic_pay) as MaxSalary, MIN(basic_pay) as MinSalary, AVG(basic_pay) as AvgSalary, COUNT(basic_pay) as Count from employee_payroll where Gender='M' or Gender='F' group by Gender";
+                    SqlCommand command = new SqlCommand(query, this.connection);
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                           
+                            char Gender = Convert.ToChar(reader["Gender"].ToString().Trim());
+                            int SumOfSalary = reader.GetInt32(1);
+                            int MaxSalary = reader.GetInt32(2);
+                            int MinSalary = reader.GetInt32(3);
+                            int AvgSalary = reader.GetInt32(4);
+                            int Count = reader.GetInt32(5);
+                            Console.WriteLine("Gender: {0}\tCount: {1}\tMinSalary: {2}\tMaxSalary: {3}\tSumOfSalary: {4}\tAvgSalary: {5}\n", Gender, Count, MinSalary, MaxSalary, SumOfSalary, AvgSalary);
+                        }
+                    }
+                    else
+                        Console.WriteLine("No data found");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }
